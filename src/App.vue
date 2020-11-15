@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <a-button type="dashed">按钮</a-button>
+    <router-view></router-view>
   </div>
 </template>
 
