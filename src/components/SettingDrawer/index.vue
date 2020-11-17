@@ -17,9 +17,18 @@
           <a-icon :type="visible ? 'close' : 'setting'" />
         </div>
       </template>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
+      <div>
+        <a-radio-group v-model="value" @change="onChange">
+          <h2>切换风格</h2>
+          <a-radio value="black">黑色</a-radio>
+          <a-radio value="light">白色</a-radio>
+        </a-radio-group>
+        <a-radio-group v-model="value" @change="onChange">
+          <h2>导航模式</h2>
+          <a-radio value="top">顶部</a-radio>
+          <a-radio value="left">左侧</a-radio>
+        </a-radio-group>
+      </div>
     </a-drawer>
   </div>
 </template>
@@ -27,7 +36,8 @@
 export default {
   data() {
     return {
-      visible: false
+      visible: false,
+      value: 1
     };
   },
   methods: {
@@ -36,6 +46,9 @@ export default {
     },
     onClose() {
       this.visible = false;
+    },
+    onChange(e) {
+      console.log("radio checked", e.target.value);
     }
   }
 };
