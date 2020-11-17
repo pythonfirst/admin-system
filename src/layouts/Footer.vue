@@ -1,5 +1,5 @@
 <template>
-  <div>Footer</div>
+  <div>Made by Zhao</div>
 </template>
 
 <script>
