@@ -18,15 +18,15 @@
         </div>
       </template>
       <div>
-        <a-radio-group v-model="value" @change="onChange">
+        <a-radio-group v-model="themeColor" @change="onChange">
           <h2>切换风格</h2>
-          <a-radio value="black">黑色</a-radio>
+          <a-radio value="blue">蓝色</a-radio>
           <a-radio value="light">白色</a-radio>
         </a-radio-group>
-        <a-radio-group v-model="value" @change="onChange">
+        <a-radio-group v-model="navType" @change="onChange">
           <h2>导航模式</h2>
-          <a-radio value="top">顶部</a-radio>
           <a-radio value="left">左侧</a-radio>
+          <a-radio value="top">顶部</a-radio>
         </a-radio-group>
       </div>
     </a-drawer>
@@ -37,7 +37,8 @@ export default {
   data() {
     return {
       visible: false,
-      value: 1
+      themeColor: "blue",
+      navType: "left"
     };
   },
   methods: {
