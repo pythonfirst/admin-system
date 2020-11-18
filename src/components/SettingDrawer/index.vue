@@ -18,12 +18,18 @@
         </div>
       </template>
       <div>
-        <a-radio-group v-model="themeColor" @change="onChange">
+        <a-radio-group
+          :value="$route.query.navTheme || 'dark'"
+          @change="e => handleSettingChange('navTheme', e)"
+        >
           <h2>切换风格</h2>
-          <a-radio value="blue">蓝色</a-radio>
+          <a-radio value="dark">黑色</a-radio>
           <a-radio value="light">白色</a-radio>
         </a-radio-group>
-        <a-radio-group v-model="navType" @change="onChange">
+        <a-radio-group
+          :value="$route.query.navLayout || 'left'"
+          @change="e => handleSettingChange('navLayout', e)"
+        >
           <h2>导航模式</h2>
           <a-radio value="left">左侧</a-radio>
           <a-radio value="top">顶部</a-radio>
@@ -36,9 +42,7 @@
 export default {
   data() {
     return {
-      visible: false,
-      themeColor: "blue",
-      navType: "left"
+      visible: false
     };
   },
   methods: {
@@ -48,8 +52,11 @@ export default {
     onClose() {
       this.visible = false;
     },
-    onChange(e) {
-      console.log("radio checked", e.target.value);
+    handleSettingChange(key, e) {
+      this.$router.push({
+        query: { ...this.$route.query, [key]: e.target.value }
+      });
+      this.$emit("handleSettingChange", { key: e.target.value });
     }
   }
 };
