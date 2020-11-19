@@ -56,7 +56,6 @@ export default {
       this.$router.push({
         query: { ...this.$route.query, [key]: e.target.value }
       });
-      this.$emit("handleSettingChange", { key: e.target.value });
     }
   }
 };

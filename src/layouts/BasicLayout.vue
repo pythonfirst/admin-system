@@ -7,6 +7,7 @@
         :trigger="null"
         v-model="collapsed"
         collapsible
+        width="256"
       >
         <div class="logo">Admin System</div>
         <SideMenu />
