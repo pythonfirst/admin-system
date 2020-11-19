@@ -27,37 +27,7 @@ export default {
     this.menuList = this.generateMenuList(this.$router.options.routes);
     return {
       current: ["mail"],
-      openKeys: [],
-      list: [
-        {
-          key: "1",
-          title: "菜单项1"
-        },
-        {
-          key: "2",
-          title: "菜单项2"
-        },
-        {
-          key: "sub1",
-          title: "菜单组1",
-          children: [
-            {
-              key: "3",
-              title: "菜单项3"
-            },
-            {
-              key: "sub2",
-              title: "菜单组2",
-              children: [
-                {
-                  key: "4",
-                  title: "菜单项4"
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      openKeys: []
     };
   },
   watch: {
@@ -91,6 +61,7 @@ export default {
               list.push({
                 key: item.path,
                 title: item.meta.title,
+                icon: item.meta.icon,
                 children: this.generateMenuList(item.children)
               });
             } else {

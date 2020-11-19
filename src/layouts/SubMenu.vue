@@ -1,7 +1,7 @@
 <template>
   <a-sub-menu :key="menuInfo.key" v-bind="$props" v-on="$listeners">
     <span slot="title">
-      <a-icon type="mail"></a-icon>
+      <a-icon :type="menuInfo.icon"></a-icon>
       <span>{{ menuInfo.title }}</span></span
     >
     <template v-for="item in menuInfo.children">
