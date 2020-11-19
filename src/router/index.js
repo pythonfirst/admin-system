@@ -76,13 +76,14 @@ const routes = [
             path: "step-form",
             name: "stepform",
             meta: { icon: "", title: "分步表单" },
-            hiddenChildrenMenu: true,
+            hiddenChildrenMenu: false,
             redirect: { name: "info" },
             component: { render: h => h("router-view") },
             children: [
               {
                 path: "info",
                 name: "info",
+                meta: { icon: "", title: "表单信息" },
                 component: () =>
                   import(
                     /* webpackChunkName: 'form' */ "../views/Form/StepForm/Info"
@@ -90,6 +91,8 @@ const routes = [
               },
               {
                 path: "confirm",
+                name: "confirm",
+                meta: { icon: "", title: "表单确认" },
                 component: () =>
                   import(
                     /* webpackChunkName: 'form' */ "../views/Form/StepForm/Confirm"
@@ -97,6 +100,8 @@ const routes = [
               },
               {
                 path: "result",
+                name: "result",
+                meta: { icon: "", title: "表单结果" },
                 component: () =>
                   import(
                     /* webpackChunkName: 'form' */ "../views/Form/StepForm/Result"
