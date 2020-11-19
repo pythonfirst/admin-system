@@ -24,10 +24,11 @@ export default {
     SubMenu
   },
   data() {
-    this.menuList = this.generateMenuList(this.$router.options.routes);
+    const menuList = this.generateMenuList(this.$router.options.routes);
     return {
       current: ["mail"],
-      openKeys: []
+      openKeys: [],
+      menuList
     };
   },
   watch: {
