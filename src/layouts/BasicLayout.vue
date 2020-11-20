@@ -10,7 +10,7 @@
         width="256"
       >
         <div class="logo">Admin System</div>
-        <SideMenu />
+        <SideMenu :isCollapsed="collapsed" />
       </a-layout-sider>
       <a-layout>
         <a-layout-header style="background: #fff; padding: 0">

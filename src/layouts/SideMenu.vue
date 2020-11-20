@@ -1,7 +1,6 @@
 <template>
   <div>
     <a-menu
-      style="width: 256px"
       :default-selected-keys="['2']"
       :selectedKeys="selectedKeys"
       :open-keys.sync="openKeys"
@@ -24,6 +23,12 @@ export default {
   components: {
     SubMenu
   },
+  props: {
+    isCollapsed: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       current: ["mail"],
@@ -42,8 +47,17 @@ export default {
       console.log("selectedKeys", val);
     },
     "$route.path": function(val) {
-      console.log("path", this.$route.path, val);
+      // console.log("path", this.$route.path, val);
       this.selectedKeys = [this.selectedKeysMap[val]];
+    },
+    isCollapsed(val) {
+      if (val) {
+        this.openKeys = [];
+        this.selectedKeys = [];
+      } else {
+        this.selectedKeys = [this.selectedKeysMap[this.$route.path]];
+        this.openKeys = this.openKeysMap[this.$route.path];
+      }
     }
   },
   computed: {
