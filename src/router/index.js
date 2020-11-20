@@ -1,10 +1,19 @@
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import findLast from "lodash";
 import Vue from "vue";
+import { Notification } from "ant-design-vue";
 import VueRouter from "vue-router";
 import NotFound from "../views/NotFound";
+import Forbidden from "../views/Forbidden";
+import { check, isLogin } from "../utils/auth";
 Vue.use(VueRouter);
 
+/**
+ * 如需设置权限，需要在meta.role设置
+ * 如不需要设置权限，需删除role字段
+ * role字段不能为[](空Array)
+ */
 const routes = [
   {
     path: "/user",
@@ -67,7 +76,7 @@ const routes = [
           },
           {
             path: "basic-form",
-            meta: { icon: "", title: "基础表单" },
+            meta: { icon: "", title: "基础表单", role: ["user"] },
             name: "basicform",
             component: () =>
               import(/* webpackChunkName: 'form' */ "../views/Form/BasicForm")
@@ -114,6 +123,11 @@ const routes = [
     ]
   },
   {
+    path: "/403",
+    hiddenInMenu: true,
+    component: Forbidden
+  },
+  {
     path: "*",
     hiddenInMenu: true,
     component: NotFound
@@ -129,6 +143,29 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   if (to.path !== from.path) {
     NProgress.start();
+  }
+
+  const record = findLast.findLast(to.matched, record => record.meta.role);
+  if (record && !check(record.meta.role)) {
+    if (!isLogin() && to.path !== "/user/login") {
+      // 防止栈溢出
+      next({
+        path: "/user/login"
+      });
+    } else if (to.path !== "/403") {
+      Notification.open({
+        type: "error",
+        message: "系统提醒",
+        description: "您没有权限访问此页面，请联系管理员咨询。",
+        onClick: () => {
+          console.log("Notification Clicked!");
+        }
+      });
+      next({
+        path: "/403"
+      });
+    }
+    NProgress.done();
   }
   next();
 });

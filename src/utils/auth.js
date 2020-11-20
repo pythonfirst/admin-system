@@ -6,7 +6,11 @@ export function getAuthority() {
 // 判断当前用户角色是否存在当前路由的权限数组中
 export function check(authority) {
   const current = getAuthority();
-  return current.some(item => authority.includes(item));
+  if (authority) {
+    return current.some(item => authority.includes(item));
+  } else {
+    return true;
+  }
 }
 
 // 判断用户是否登陆

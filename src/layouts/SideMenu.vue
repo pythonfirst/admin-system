@@ -19,6 +19,7 @@
 </template>
 <script>
 import SubMenu from "./SubMenu";
+import { check } from "../utils/auth";
 export default {
   components: {
     SubMenu
@@ -82,9 +83,17 @@ export default {
     titleClick(e) {
       console.log("titleClick", e);
     },
+
+    /**
+     * 动态生成sidemenu需要考虑
+     * parentPath parentItem 同时生成selectedKayMap
+     * openKeys 同时生成openKeysMap
+     * hidden参数 是否是隐藏的menu
+     * 验证当前用户是否有访问
+     */
     generateMenuList(
       route,
-      parentPath = "",
+      parentPath = "", // 生成路由
       hidden = false,
       parentItem = "",
       openKeys = []
@@ -98,55 +107,63 @@ export default {
         // exclude hidden memus
         if (!item.hiddenInMenu) {
           // subMenu
-          if (item.children && !item.hiddenChildrenMenu) {
-            if (item.name) {
-              openKeysArray.push(item.path);
-              paths =
-                item.path[0] === "/"
-                  ? `${paths}${item.path}`
-                  : `${paths}/${item.path}`;
-              list.push({
-                key: item.path,
-                title: item.meta.title,
-                icon: item.meta.icon,
-                children: this.generateMenuList(
-                  item.children,
-                  paths,
-                  hidden,
-                  parentItem,
-                  openKeysArray
-                )
-              });
-            } else {
-              list = this.generateMenuList(
-                item.children,
-                "",
-                hidden,
-                parentItem
-              ); // 这里容易犯错误，写成了 this.this.generateMenuList(item.children)
-            }
-            // menu-item
-          } else {
-            if (item.name) {
-              paths = `${paths}/${item.path}`;
-              this.openKeysMap[paths] = openKeysArray;
-
-              if (!hidden) {
-                this.selectedKeysMap[paths] = item.path;
+          // 权限管理
+          if (
+            (item.meta && item.meta.role && check(item.meta.role)) ||
+            !item.meta ||
+            item.meta.rol === [] ||
+            !item.meta.role
+          ) {
+            if (item.children && !item.hiddenChildrenMenu) {
+              if (item.name) {
+                openKeysArray.push(item.path);
+                paths =
+                  item.path[0] === "/"
+                    ? `${paths}${item.path}`
+                    : `${paths}/${item.path}`;
+                list.push({
+                  key: item.path,
+                  title: item.meta.title,
+                  icon: item.meta.icon,
+                  children: this.generateMenuList(
+                    item.children,
+                    paths,
+                    hidden,
+                    parentItem,
+                    openKeysArray
+                  )
+                });
               } else {
-                this.selectedKeysMap[paths] = parentItem;
-              }
-
-              list.push({ key: item.path, title: item.meta.title });
-              // 处理隐藏children的key map
-              if (item.children && item.hiddenChildrenMenu) {
-                this.generateMenuList(
+                list = this.generateMenuList(
                   item.children,
-                  (parentPath = paths),
-                  true,
-                  item.path,
-                  openKeys
-                );
+                  "",
+                  hidden,
+                  parentItem
+                ); // 这里容易犯错误，写成了 this.this.generateMenuList(item.children)
+              }
+              // menu-item
+            } else {
+              if (item.name) {
+                paths = `${paths}/${item.path}`;
+                this.openKeysMap[paths] = openKeysArray;
+
+                if (!hidden) {
+                  this.selectedKeysMap[paths] = item.path;
+                } else {
+                  this.selectedKeysMap[paths] = parentItem;
+                }
+
+                list.push({ key: item.path, title: item.meta.title });
+                // 处理隐藏children的key map
+                if (item.children && item.hiddenChildrenMenu) {
+                  this.generateMenuList(
+                    item.children,
+                    (parentPath = paths),
+                    true,
+                    item.path,
+                    openKeys
+                  );
+                }
               }
             }
           }
