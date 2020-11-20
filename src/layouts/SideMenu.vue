@@ -77,9 +77,9 @@ export default {
     ) {
       let copyRoutes = [...route];
       let list = [];
-      let path = parentPath;
+      // let path = parentPath;
       copyRoutes.forEach(item => {
-        let paths = path; // 这一步搞了半天，是真的半天（4个小时）
+        let paths = parentPath; // 这一步搞了半天，是真的半天（4个小时）
         let openKeysArray = [...openKeys]; // 这个引用类型和path的基本类型要区别开，也是吃了亏的。
         // exclude hidden memus
         if (!item.hiddenInMenu) {
