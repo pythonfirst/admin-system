@@ -53,8 +53,8 @@ export default {
   },
   created() {
     this.menuList = this.generateMenuList(this.$router.options.routes);
-    console.log(this.$route.path, this.selectedKeysMap);
     this.selectedKeys = [this.selectedKeysMap[this.$route.path]]; // 默认选中菜单
+    this.openKeys = this.openKeysMap[this.$route.path];
   },
   methods: {
     handleClick(e) {
@@ -68,17 +68,25 @@ export default {
     titleClick(e) {
       console.log("titleClick", e);
     },
-    generateMenuList(route, parentPath = "", hidden = false, parentItem = "") {
+    generateMenuList(
+      route,
+      parentPath = "",
+      hidden = false,
+      parentItem = "",
+      openKeys = []
+    ) {
       let copyRoutes = [...route];
       let list = [];
       let path = parentPath;
       copyRoutes.forEach(item => {
         let paths = path; // 这一步搞了半天，是真的半天（4个小时）
+        let openKeysArray = [...openKeys]; // 这个引用类型和path的基本类型要区别开，也是吃了亏的。
         // exclude hidden memus
         if (!item.hiddenInMenu) {
           // subMenu
           if (item.children && !item.hiddenChildrenMenu) {
             if (item.name) {
+              openKeysArray.push(item.path);
               paths =
                 item.path[0] === "/"
                   ? `${paths}${item.path}`
@@ -91,7 +99,8 @@ export default {
                   item.children,
                   paths,
                   hidden,
-                  parentItem
+                  parentItem,
+                  openKeysArray
                 )
               });
             } else {
@@ -105,12 +114,15 @@ export default {
             // menu-item
           } else {
             if (item.name) {
-              paths = `${parentPath}/${item.path}`;
+              paths = `${paths}/${item.path}`;
+              this.openKeysMap[paths] = openKeysArray;
+
               if (!hidden) {
                 this.selectedKeysMap[paths] = item.path;
               } else {
                 this.selectedKeysMap[paths] = parentItem;
               }
+
               list.push({ key: item.path, title: item.meta.title });
               // 处理隐藏children的key map
               if (item.children && item.hiddenChildrenMenu) {
@@ -118,7 +130,8 @@ export default {
                   item.children,
                   (parentPath = paths),
                   true,
-                  item.path
+                  item.path,
+                  openKeys
                 );
               }
             }
