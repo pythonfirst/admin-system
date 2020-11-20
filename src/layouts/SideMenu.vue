@@ -3,6 +3,7 @@
     <a-menu
       style="width: 256px"
       :default-selected-keys="['2']"
+      :selectedKeys="selectedKeys"
       :open-keys.sync="openKeys"
       mode="inline"
       @click="handleClick"
@@ -24,16 +25,25 @@ export default {
     SubMenu
   },
   data() {
-    const menuList = this.generateMenuList(this.$router.options.routes);
     return {
       current: ["mail"],
       openKeys: [],
-      menuList
+      menuList: [],
+      selectedKeys: [],
+      selectedKeysMap: {},
+      openKeysMap: {}
     };
   },
   watch: {
     openKeys(val) {
       console.log("openKeys", val);
+    },
+    selectedKeys(val) {
+      console.log("selectedKeys", val);
+    },
+    "$route.path": function(val) {
+      console.log("path", this.$route.path, val);
+      this.selectedKeys = [this.selectedKeysMap[val]];
     }
   },
   computed: {
@@ -41,9 +51,15 @@ export default {
       return this.$route.query.navTheme || "dark";
     }
   },
+  created() {
+    this.menuList = this.generateMenuList(this.$router.options.routes);
+    console.log(this.$route.path, this.selectedKeysMap);
+    this.selectedKeys = [this.selectedKeysMap[this.$route.path]]; // 默认选中菜单
+  },
   methods: {
     handleClick(e) {
       console.log("click", e);
+      this.selectedKeys = [e.key];
       let path = e.keyPath.reverse().join("/");
       this.$router
         .push({ path: path, query: { ...this.$route.query } })
@@ -52,25 +68,59 @@ export default {
     titleClick(e) {
       console.log("titleClick", e);
     },
-    generateMenuList(route) {
+    generateMenuList(route, parentPath = "", hidden = false, parentItem = "") {
       let copyRoutes = [...route];
       let list = [];
+      let path = parentPath;
       copyRoutes.forEach(item => {
+        let paths = path; // 这一步搞了半天，是真的半天（4个小时）
+        // exclude hidden memus
         if (!item.hiddenInMenu) {
+          // subMenu
           if (item.children && !item.hiddenChildrenMenu) {
             if (item.name) {
+              paths =
+                item.path[0] === "/"
+                  ? `${paths}${item.path}`
+                  : `${paths}/${item.path}`;
               list.push({
                 key: item.path,
                 title: item.meta.title,
                 icon: item.meta.icon,
-                children: this.generateMenuList(item.children)
+                children: this.generateMenuList(
+                  item.children,
+                  paths,
+                  hidden,
+                  parentItem
+                )
               });
             } else {
-              list = this.generateMenuList(item.children); // 这里容易犯错误，写成了 this.this.generateMenuList(item.children)
+              list = this.generateMenuList(
+                item.children,
+                "",
+                hidden,
+                parentItem
+              ); // 这里容易犯错误，写成了 this.this.generateMenuList(item.children)
             }
+            // menu-item
           } else {
             if (item.name) {
+              paths = `${parentPath}/${item.path}`;
+              if (!hidden) {
+                this.selectedKeysMap[paths] = item.path;
+              } else {
+                this.selectedKeysMap[paths] = parentItem;
+              }
               list.push({ key: item.path, title: item.meta.title });
+              // 处理隐藏children的key map
+              if (item.children && item.hiddenChildrenMenu) {
+                this.generateMenuList(
+                  item.children,
+                  (parentPath = paths),
+                  true,
+                  item.path
+                );
+              }
             }
           }
         }

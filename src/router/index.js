@@ -76,7 +76,7 @@ const routes = [
             path: "step-form",
             name: "stepform",
             meta: { icon: "", title: "分步表单" },
-            hiddenChildrenMenu: false,
+            // hiddenChildrenMenu: true,
             redirect: { name: "info" },
             component: { render: h => h("router-view") },
             children: [
