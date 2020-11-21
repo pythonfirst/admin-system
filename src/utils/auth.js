@@ -1,6 +1,6 @@
 // 获取当前用户角色
 export function getAuthority() {
-  return ["admin"];
+  return ["user"];
 }
 
 // 判断当前用户角色是否存在当前路由的权限数组中

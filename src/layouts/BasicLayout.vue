@@ -33,6 +33,7 @@
         </a-layout-footer>
       </a-layout>
     </a-layout>
+    <!-- 脱离了dom文档流，无法用权限指令 -->
     <SettingDrawer class="drawer" />
   </div>
 </template>
@@ -82,11 +83,5 @@ export default {
 }
 .nav-theme-dark >>> .logo {
   color: #ffffff;
-}
-.nav-theme-light {
-}
-.nav-layout-left {
-}
-.nav-layout-top {
 }
 </style>

@@ -2,6 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+import Auth from "./directives/Auth";
 import {
   Button,
   Layout,
@@ -21,6 +22,7 @@ Vue.use(Breadcrumb);
 Vue.use(Icon);
 Vue.use(Drawer);
 Vue.use(Radio);
+Vue.use(Auth);
 
 new Vue({
   router,
