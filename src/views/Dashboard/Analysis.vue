@@ -8,7 +8,7 @@
 
 <script>
 import Chart from "../../components/Chart";
-import axios from "axios";
+import { request } from "../../utils/request";
 export default {
   components: { Chart },
   created() {
@@ -27,8 +27,11 @@ export default {
       }, 300000);
     },
     getChartData() {
-      axios
-        .get("/api/dashboard/chart", { params: { ID: 12345 } })
+      request({
+        methods: "get",
+        url: "/api/dashboard/chart",
+        params: { ID: 12345 }
+      })
         .then(response => {
           this.options = {
             title: {
@@ -47,7 +50,8 @@ export default {
               }
             ]
           };
-        });
+        })
+        .catch(err => console.log("err", err));
     }
   },
   beforeDestroy() {
