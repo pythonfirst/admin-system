@@ -1,5 +1,7 @@
 <template>
-  <div>基础表单</div>
+  <Authorized :role="['admin']">
+    <div>基础表单</div>
+  </Authorized>
 </template>
 
 <script>

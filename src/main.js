@@ -3,6 +3,8 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import Auth from "./directives/Auth";
+import Authorized from "./components/Authorized";
+
 import {
   Button,
   Layout,
@@ -23,6 +25,8 @@ Vue.use(Icon);
 Vue.use(Drawer);
 Vue.use(Radio);
 Vue.use(Auth);
+
+Vue.component("Authorized", Authorized);
 
 new Vue({
   router,

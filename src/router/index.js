@@ -76,7 +76,7 @@ const routes = [
           },
           {
             path: "basic-form",
-            meta: { icon: "", title: "基础表单", role: ["user"] },
+            meta: { icon: "", title: "基础表单", role: ["user", "admin"] },
             name: "basicform",
             component: () =>
               import(/* webpackChunkName: 'form' */ "../views/Form/BasicForm")
